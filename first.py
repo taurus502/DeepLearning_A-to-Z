@@ -50,4 +50,31 @@ def customize_test(data):
     b1 = tf.Variable(tf.constant(1e-5, shape=[num_layer1]))
     l1 = tf.nn.relu(tf.nn.bias_add(tf.matmul(inputs, w1), b1))
     
+    num_layer2 = 40
+    w2 = tf.Variable(tf.truncated_normal(shape=[num_layer1, num_layer2], stddev = 0.01))
+    b2 = tf.Variable(tf.constant(1e-5, shape=[num_layer2]))
+    l2 = tf.nn.relu(tf.nn.bias_add(tf.matmul(l1, w2), b2))
+    l2 = tf.nn.dropout(l2, keep_prob = prob)
     
+    w3 = tf.Variable(tf.truncated_normal(shape=[num_layer2, 10], stddev = 0.01))
+    b3 = tf.Variable(tf.constant(1e-5, shape=[10]))
+    l3 = tf.nn.relu(tf.nn.bias_add(tf.matmul(l2, w3), b3))
+    
+    return l3
+  
+  x = tf.placeholder(tf.float32, [None, 784])
+  #y = tf.placeholder(tf.float32, [None, 10])
+  final = model(x)
+
+  #loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = final, labels = y))
+  #opt = tf.train.AdamOptimizer(0.001).minimize(loss)
+  
+  init = tf.global_variables_initializer()
+  saver = tf.train.Saver()
+  
+  with tf.Session() as sess:
+    sess.run(init)
+    saver.restore(sess, path)
+    
+    tmp = tf.cast(final, tf.float32)
+    acc = 
