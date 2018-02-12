@@ -77,4 +77,14 @@ def customize_test(data):
     saver.restore(sess, path)
     
     tmp = tf.cast(final, tf.float32)
-    acc = 
+    acc = tf.nn.softmax(tmp) #type is tensor
+    
+    print('prob. of this digit')
+    print(sess.run(acc, feed_dict={x:data}))
+ 
+mousebrush()
+
+print drawn_data #784 np array
+data = []
+data.append(drawn_data)
+customize_test(data)
