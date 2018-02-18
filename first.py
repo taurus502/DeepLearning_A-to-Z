@@ -12,6 +12,7 @@ def onmouse(event, x, y, flags, param):
     #radius == 15 / default color == (255, 255, 255) which means white color
 
     
+    
 def mousebrush():
   global drawn_data
   
@@ -34,15 +35,17 @@ def mousebrush():
         
         if k == 27: #button means 'esc'
           drawn_data = np.asarray(new_img).flatten()
-          
+          #asarray : tuple -> nparray
+          #flatten : 2d nparray(28,28) -> 1d nparray(784,)
           break
       break
       
   cv2.destroyAllWindows()
   
+  
+  
 def customize_test(data):
   prob = 1
-  path = '/mnt/disk2/saved_mnist/model2/model_new.ckpt'
   
   def model(inputs):
     num_layer1 = 100
@@ -71,19 +74,21 @@ def customize_test(data):
   
   init = tf.global_variables_initializer()
   saver = tf.train.Saver()
+  path = '/mnt/disk2/saved_mnist/model2/model_new.ckpt' #file path
   
   with tf.Session() as sess:
     sess.run(init)
-    saver.restore(sess, path)
+    saver.restore(sess, path) #load the network
     
     tmp = tf.cast(final, tf.float32)
-    acc = tf.nn.softmax(tmp) #type is tensor
+    acc = tf.nn.softmax(tmp) #tensor type
     
-    print('prob. of this digit')
+    print('prob. of this digit : ')
     print(sess.run(acc, feed_dict={x:data}))
  
-mousebrush()
 
+
+mousebrush()
 print drawn_data #784 np array
 data = []
 data.append(drawn_data)
