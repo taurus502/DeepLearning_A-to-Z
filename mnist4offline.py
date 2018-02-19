@@ -3,15 +3,14 @@ import tensorflow as tf
 import gzip
 import random
 
-NUM_TRAIN_DATA = 60000
-NUM_TEST_DATA = 10000
+NUM_TRAIN_DATA = 60000 #MNIST TRAIN DATA SIZE
+NUM_TEST_DATA = 10000 #MNIST TEST DATA SIZE
 NUM_EPOCH = 20
 NUM_BATCH = 500
-PROB = 0.7
+PROB = 0.7 #dropout
 
-
-#read MNIST gzip
-def read_data(if_test):
+#read MNIST gzip data format / output = image, label (nparray)
+def read_data(if_test): #if_test == 0 : train case / else : test case
   
   #train case
   if if_test == 0: 
@@ -59,7 +58,7 @@ def read_data(if_test):
 
   
 #define neural network model
-def model(inputs):
+def model(inputs, prob):#inputs : img / prob : prob. of dropout
   NUM_LAYER1 = 100
   w1 = tf.Variable(tf.truncated_normal(shape=[784, NUM_LAYER1], stddev = 1e-2))
   b1 = tf.Variable(tf.constant(1e-5, shape=[NUM_LAYER1]))
@@ -69,6 +68,7 @@ def model(inputs):
   w2 = tf.Variable(tf.truncated_normal(shape=[NUM_LAYER1, NUM_LAYER2], stddev = 1e-2))
   b2 = tf.Variable(tf.constant(1e-5, shape=[NUM_LAYER2]))
   l2 = tf.nn.relu(tf.nn.bias_add(tf.matmul(l1, w2), b2))
+  l2 = tf.nn.dropout(l2, keep_prob = prob)
   
   w3 = tf.Variable(tf.truncated_normal(shape=[NUM_LAYER2, 10], stddev = 1e-2))
   b3 = tf.Variable(tf.constant(1e-5, shape=[10]))
@@ -80,11 +80,29 @@ def model(inputs):
 #placeholder
 x_ = tf.placeholder(tf.float32, [None, 784])
 y_ = tf.placeholder(tf.float32, [None, 10])
-final = model(x_)
+hypothesis = model(x_, PROB)
 
-#cost function, optimization
+#cost function, optimization, saver
 loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = final, labels = y))
 opt = tf.train.AdamOptimizer(1e-3).minimize(loss)
-
-# save model
 saver = tf.train.Saver()
+
+with tf.Session() as sess:
+  init = tf.global_variables_initializer()
+  sess.run(init)
+  
+  xx, yy = read_data(0) #train case
+  
+  #SGD
+  for j in range(NUM_EPOCH):
+    avg_err = 0
+    idx = np.arrange(0, NUM_TRAIN_DATA)
+    np.random.shuffle(idx) #ex:[2831 126 593 2 ...]
+    iter = int(NUM_TRAIN_DATA / NUM_BATCH) # ex : 7/3 = 2
+    
+    fot i in range(iter):
+      idx_start = NUM_BATCH*i
+      idx_end = idx_start + NUM_BATCH
+      ltmp = idx[idx_start:idx_end]
+      
+      data_shuffle = [
