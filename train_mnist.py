@@ -9,6 +9,8 @@ NUM_EPOCH = 20
 NUM_BATCH = 500
 PROB = 0.7
 
+
+#read MNIST gzip
 def read_data(if_test):
   
   #train case
@@ -54,4 +56,35 @@ def read_data(if_test):
       test_lbl[i] = lbl_onehot
       
     return test_img.astype(dtype = np.float32), test_lbl.astype(dtype = np.float32) #component format : uint8 -> float32
-    
+
+  
+#define neural network model
+def model(inputs):
+  NUM_LAYER1 = 100
+  w1 = tf.Variable(tf.truncated_normal(shape=[784, NUM_LAYER1], stddev = 1e-2))
+  b1 = tf.Variable(tf.constant(1e-5, shape=[NUM_LAYER1]))
+  l1 = tf.nn.relu(tf.nn.bias_add(tf.matmul(inputs, w1), b1))
+  
+  NUM_LAYER2 = 40
+  w2 = tf.Variable(tf.truncated_normal(shape=[NUM_LAYER1, NUM_LAYER2], stddev = 1e-2))
+  b2 = tf.Variable(tf.constant(1e-5, shape=[NUM_LAYER2]))
+  l2 = tf.nn.relu(tf.nn.bias_add(tf.matmul(l1, w2), b2))
+  
+  w3 = tf.Variable(tf.truncated_normal(shape=[NUM_LAYER2, 10], stddev = 1e-2))
+  b3 = tf.Variable(tf.constant(1e-5, shape=[10]))
+  l3 = tf.nn.relu(tf.nn.bias_add(tf.matmul(l2, w3), b3))
+  
+  return l3
+
+
+#placeholder
+x_ = tf.placeholder(tf.float32, [None, 784])
+y_ = tf.placeholder(tf.float32, [None, 10])
+final = model(x_)
+
+#cost function, optimization
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = final, labels = y))
+opt = tf.train.AdamOptimizer(1e-3).minimize(loss)
+
+# save model
+saver = tf.train.Saver()
