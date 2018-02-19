@@ -11,11 +11,13 @@ PROB = 0.7 #dropout
 
 #read MNIST gzip data format / output = image, label (nparray)
 def read_data(if_test): #if_test == 0 : train case / else : test case
+  PATH_TRAIN_IMG = '/home/ubuntu/mnist/train-images-idx3-ubyte.gz'
+  PATH_TRAIN_LBL = '/home/ubuntu/mnist/train-labels-idx1-ubyte.gz'
+  PATH_TEST_IMG = '/home/ubuntu/mnist/t10k-images-idx3-ubyte.gz' 
+  PATH_TEST_LBL = '/home/ubuntu/mnist/t10k-labels-idx1-ubyte.gz'
   
   #train case
-  if if_test == 0: 
-    PATH_TRAIN_IMG = '/home/ubuntu/mnist/train-images-idx3-ubyte.gz'
-    PATH_TRAIN_LBL = '/home/ubuntu/mnist/train-labels-idx1-ubyte.gz'
+  if if_test == 0:  
     fp_img = gzip.open(PATH_TRAIN_IMG, 'rb')
     fp_lbl = gzip.open(PATH_TRAIN_LBL, 'rb')
     fp_img.read(16) #not used data
@@ -36,8 +38,6 @@ def read_data(if_test): #if_test == 0 : train case / else : test case
   
   #test case
   else:
-    PATH_TEST_IMG = '/home/ubuntu/mnist/t10k-images-idx3-ubyte.gz' 
-    PATH_TEST_LBL = '/home/ubuntu/mnist/t10k-labels-idx1-ubyte.gz'
     fp_img = gzip.open(PATH_TEST_IMG, 'rb')
     fp_lbl = gzip.open(PATH_TEST_LBL, 'rb')
     fp_img.read(16) #not used data
@@ -105,4 +105,4 @@ with tf.Session() as sess:
       idx_end = idx_start + NUM_BATCH
       ltmp = idx[idx_start:idx_end]
       
-      data_shuffle = [
+      img_shuffle = [
