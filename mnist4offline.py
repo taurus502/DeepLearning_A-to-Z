@@ -3,8 +3,8 @@ import tensorflow as tf
 import gzip
 import random
 
-NUM_TRAIN_DATA = 60000 #MNIST TRAIN DATA SIZE
-NUM_TEST_DATA = 10000 #MNIST TEST DATA SIZE
+NUM_TRAIN_DATA = 60000 #NUM OF MNIST TRAIN DATA
+NUM_TEST_DATA = 10000 #NUM OF MNIST TEST DATA
 NUM_EPOCH = 20
 NUM_BATCH = 500
 PROB = 0.7 #dropout
@@ -88,6 +88,7 @@ hypothesis = model(x_, PROB)
 loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = hypothesis, labels = y_))
 opt = tf.train.AdamOptimizer(1e-3).minimize(loss)
 saver = tf.train.Saver()
+#save_path = '/mnt/disk3/saved/model.ckpt'
 
 #load data
 train_x, train_y, test_x, test_y = read_data()
@@ -99,17 +100,28 @@ with tf.Session() as sess:
     
   #SGD
   for j in range(NUM_EPOCH):
-    avg_err = 0
+    train_err = 0
+    test_err = 0
     idx = np.arrange(0, NUM_TRAIN_DATA)
     np.random.shuffle(idx) #ex:[2831 126 593 2 ...]
     iter = int(NUM_TRAIN_DATA / NUM_BATCH) # ex : 7/3 = 2
     
+    #iteration for 1 epoch
     fot i in range(iter):
       idx_start = NUM_BATCH*i
       idx_end = idx_start + NUM_BATCH
       ltmp = idx[idx_start:idx_end]
       
-      img_shuffle = [xx[k] for k in ltmp]
-      lbl_shuffle = [yy[k] for k in ltmp]
+      img_shuffle = [train_x[k] for k in ltmp]
+      lbl_shuffle = [train_y[k] for k in ltmp]
       
+      losstmp, _ = sess.run([loss, opt], feed_dict={x_:img_shuffle, y_:lbl_shuffle, PROB:PROB}) #update variables
+      
+      loss_ = sess.run(loss, feed_dict={x_:img_shuffle, y_:lbl_shuffle, PROB:1.0}) #measure loss without dropout
+      train_err = train_err + loss_
+      
+    print('train loss at epoch %d ---> %f' %(j, train_err/iter))
+    print('test loss ---> %f', sess.run(loss, feed_dict={x_:test_X, y_:test_y, PROB:1.0})
+  
+  #saver.save(sess, save_path)
       
