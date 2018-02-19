@@ -107,7 +107,7 @@ with tf.Session() as sess:
     iter = int(NUM_TRAIN_DATA / NUM_BATCH) # ex : 7/3 = 2
     
     #iteration for 1 epoch
-    fot i in range(iter):
+    for i in range(iter):
       idx_start = NUM_BATCH*i
       idx_end = idx_start + NUM_BATCH
       ltmp = idx[idx_start:idx_end]
