@@ -15,7 +15,7 @@ NUM_BATCH = 500
 PROB = 0.7 #dropout
 
 #read MNIST gzip data format / output : train image, label, test image, label (nparray)
-def read_data(): #for read 'gz'files(ubyte)
+def read_data(): #for reading raw 'gz'files(ubyte)
   PATH_TRAIN_IMG = '/home/ubuntu/mnist/train-images-idx3-ubyte.gz'
   PATH_TRAIN_LBL = '/home/ubuntu/mnist/train-labels-idx1-ubyte.gz'
   PATH_TEST_IMG = '/home/ubuntu/mnist/t10k-images-idx3-ubyte.gz' 
