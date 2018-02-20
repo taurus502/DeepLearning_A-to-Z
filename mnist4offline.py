@@ -1,3 +1,8 @@
+#Digit classification using MNIST dataset with fully connected layers only
+#Offline coding version(not used MNIST online library)
+#1)Download original MNIST dataset files; train-images-idx3..., train-labels-idx1...
+#2)Change path
+
 import numpy as np
 import tensorflow as tf
 import gzip
@@ -10,7 +15,7 @@ NUM_BATCH = 500
 PROB = 0.7 #dropout
 
 #read MNIST gzip data format / output : train image, label, test image, label (nparray)
-def read_data():
+def read_data(): #for read 'gz'files(ubyte)
   PATH_TRAIN_IMG = '/home/ubuntu/mnist/train-images-idx3-ubyte.gz'
   PATH_TRAIN_LBL = '/home/ubuntu/mnist/train-labels-idx1-ubyte.gz'
   PATH_TEST_IMG = '/home/ubuntu/mnist/t10k-images-idx3-ubyte.gz' 
