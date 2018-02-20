@@ -1,3 +1,14 @@
+#Instantly detect digits I drew
+#Trained with MNIST dataset
+#MUST Load pre-trained MNIST classification network
+#MUST Match the model with pre-trained network
+
+#1)Draw Digit(0-9)
+#2)Push 'esc'
+#3)Digit drawn is shown as 28x28 size
+#4)Print probability of the digit
+
+
 import cv2
 import tensorflow as tf
 import random
